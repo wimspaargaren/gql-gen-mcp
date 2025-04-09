@@ -1,0 +1,38 @@
+// Package main bootstraps the MCP server and registers the tools.
+package main
+
+import (
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/wimspaargaren/gql-gen-mcp/graphql"
+	"github.com/mark3labs/mcp-go/server"
+)
+
+// This file will not be regenerated automatically.
+//
+// It serves as dependency injection for your server
+// add any graphql client and MCP server configurations here.
+
+func main() {
+    s := server.NewMCPServer(
+		"GraphQL MCP Server",
+		"1.0.0",
+		server.WithResourceCapabilities(true, true),
+		server.WithLogging(),
+		server.WithRecovery(),
+	)
+
+	gqlClient := graphql.NewDefaultClient(os.Getenv("BASE_URL"), func(req *http.Request) error {
+		req.Header.Set("Authorization", "Bearer "+os.Getenv("AUTH_TOKEN"))
+		return nil
+	})
+
+    toolRegistry := NewToolRegistry(s,gqlClient)
+	toolRegistry.RegisterTools()
+
+    if err := server.ServeStdio(s); err != nil {
+		log.Fatalf("server error: %s\n", err)
+	}
+}

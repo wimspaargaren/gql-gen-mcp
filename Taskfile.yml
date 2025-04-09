@@ -1,0 +1,38 @@
+---
+version: 3
+
+tasks:
+  lint:
+    desc: Run linters
+    cmds:
+      - golangci-lint run --timeout 5m
+    silent: true
+  test:
+    desc: Run tests
+    cmds:
+      - mkdir -p reports
+      - go test -v -race -coverprofile=reports/codecoverage_all.cov -cover ./...
+      - GO_COVER_IGNORE_COVER_PROFILE_PATH="reports/codecoverage_all.cov" go-cover-ignore
+      - go tool cover -func=reports/codecoverage_all.cov > reports/functioncoverage.out
+      - go tool cover -html=reports/codecoverage_all.cov -o reports/coverage.html
+      - echo "View report at $(PWD)/reports/coverage.html"
+      - go-cover-treemap -coverprofile reports/codecoverage_all.cov > reports/tree-map.svg
+      - tail -n 1 reports/functioncoverage.out
+    silent: true
+  integration-test:
+    desc: Run integration tests
+    cmds:
+      - go install .
+      - cd example && gql-gen-mcp
+      - task format
+    silent: true
+  format:
+    desc: Run format
+    cmds:
+      - golangci-lint fmt
+    silent: true
+  vuln-check:
+    desc: Run vulnerability check
+    cmds:
+      - govulncheck -test ./...
+    silent: true

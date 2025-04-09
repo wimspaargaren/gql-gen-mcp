@@ -1,0 +1,4 @@
+schemas:
+  - name: bookstore
+    dir: ./bookstore/graphql/definitions
+    output: ./mcp/bookstore

@@ -1,0 +1,437 @@
+"""
+An interface that all entities with an ID implement.
+"""
+interface Node {
+  """
+  The unique identifier for the entity.
+  """
+  id: ID!
+}
+
+"""
+Represents the status of a book in the store.
+"""
+enum BookStatus {
+  """
+  The book is available for purchase.
+  """
+  AVAILABLE
+
+  """
+  The book is currently out of stock.
+  """
+  OUT_OF_STOCK
+
+  """
+  The book is no longer being sold.
+  """
+  DISCONTINUED
+}
+
+"""
+Represents the genre of a book.
+"""
+enum Genre {
+  """
+  A work of fiction or imaginative narrative.
+  """
+  FICTION
+
+  """
+  A work based on real facts or events.
+  """
+  NON_FICTION
+
+  """
+  A work related to scientific subjects.
+  """
+  SCIENCE
+
+  """
+  A historical work or book about past events.
+  """
+  HISTORY
+
+  """
+  A work of fantasy including magical or supernatural elements.
+  """
+  FANTASY
+
+  """
+  A written account of someone's life experiences.
+  """
+  BIOGRAPHY
+
+  """
+  A book intended for children or younger audiences.
+  """
+  CHILDREN
+
+  """
+  A work primarily focused on romantic relationships.
+  """
+  ROMANCE
+
+  """
+  A story with elements of suspense or excitement, usually including danger.
+  """
+  THRILLER
+
+  """
+  A story that involves solving a crime or uncovering secrets.
+  """
+  MYSTERY
+
+  """
+  A book intended to provide guidelines or advice on self-improvement.
+  """
+  SELF_HELP
+}
+
+"""
+Fields that can be used to sort a list of books.
+"""
+enum BookSortField {
+  """
+  Sort by the book's title.
+  """
+  TITLE
+
+  """
+  Sort by the year the book was published.
+  """
+  PUBLISHED_YEAR
+
+  """
+  Sort by the price of the book.
+  """
+  PRICE
+}
+
+"""
+A single author of books.
+"""
+type Author implements Node {
+  """
+  The unique identifier for the author.
+  """
+  id: ID!
+
+  """
+  The name of the author.
+  """
+  name: String!
+
+  """
+  A biography or description of the author's life and work.
+  """
+  biography: String
+
+  """
+  A list of books written by the author.
+  """
+  books: [Book!]!
+}
+
+"""
+Represents a book in the store.
+"""
+type Book implements Node {
+  """
+  The unique identifier for the book.
+  """
+  id: ID!
+
+  """
+  The title of the book.
+  """
+  title: String!
+
+  """
+  A brief description of the book's content.
+  """
+  description: String
+
+  """
+  The year the book was published.
+  """
+  publishedYear: Int
+
+  """
+  The genre of the book.
+  """
+  genre: Genre!
+
+  """
+  The price of the book.
+  """
+  price: Float!
+
+  """
+  The status of the book (e.g., available, out of stock).
+  """
+  status: BookStatus!
+
+  """
+  The author who wrote the book.
+  """
+  author: Author!
+}
+
+"""
+Pagination metadata for a connection.
+Follows the Relay Cursor Connections Specification.
+"""
+type PageInfo {
+  """
+  Indicates whether there is a next page of data.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether there is a previous page of data.
+  """
+  hasPreviousPage: Boolean!
+
+  """
+  The cursor corresponding to the start of the current page.
+  """
+  startCursor: String
+
+  """
+  The cursor corresponding to the end of the current page.
+  """
+  endCursor: String
+}
+
+"""
+An edge that contains a book and its cursor.
+"""
+type BookEdge {
+  """
+  A unique cursor for the book in the current connection.
+  """
+  cursor: String!
+
+  """
+  The actual book entity represented by this edge.
+  """
+  node: Book!
+}
+
+"""
+A paginated list of books.
+"""
+type BookConnection {
+  """
+  The total number of books matching the query.
+  """
+  totalCount: Int!
+
+  """
+  A list of book edges, each containing a book and its cursor.
+  """
+  edges: [BookEdge!]!
+
+  """
+  Metadata about the current page of results.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+Input for filtering books in a query.
+"""
+input BookFilterInput {
+  """
+  Filter by the book's genre.
+  """
+  genre: Genre
+
+  """
+  Filter by the book's status (e.g., available, out of stock).
+  """
+  status: BookStatus
+
+  """
+  Filter by the ID of the author of the book.
+  """
+  authorId: ID
+
+  """
+  Filter by the minimum price of the book.
+  """
+  minPrice: Float
+
+  """
+  Filter by the maximum price of the book.
+  """
+  maxPrice: Float
+
+  """
+  Filter by books published after a specific year.
+  """
+  publishedAfter: Int
+
+  """
+  Filter by books published before a specific year.
+  """
+  publishedBefore: Int
+
+  """
+  Search text that matches the book's title or description.
+  """
+  searchText: String
+}
+
+"""
+Input for listing books with pagination, sorting, and filtering.
+"""
+input BookListInput {
+  """
+  Filters to apply when listing books.
+  """
+  filter: BookFilterInput
+
+  """
+  The maximum number of books to return in the list.
+  Defaults to 10.
+  """
+  first: Int = 10
+
+  """
+  The cursor to start retrieving books after.
+  """
+  after: String
+
+  """
+  The field to sort the list of books by.
+  Defaults to TITLE.
+  """
+  sortBy: BookSortField = TITLE
+}
+
+"""
+Input for creating a new book.
+"""
+input CreateBookInput {
+  """
+  The title of the book.
+  """
+  title: String!
+
+  """
+  A brief description of the book's content.
+  """
+  description: String
+
+  """
+  The year the book was published.
+  """
+  publishedYear: Int
+
+  """
+  The genre of the book.
+  """
+  genre: Genre!
+
+  """
+  The price of the book.
+  """
+  price: Float!
+
+  """
+  The status of the book (e.g., available, out of stock).
+  """
+  status: BookStatus!
+
+  """
+  The ID of the author who wrote the book.
+  """
+  authorId: ID!
+}
+
+"""
+Input for updating an existing book.
+"""
+input UpdateBookInput {
+  """
+  Update the title of the book.
+  """
+  title: String
+
+  """
+  Update the description of the book's content.
+  """
+  description: String
+
+  """
+  Update the year the book was published.
+  """
+  publishedYear: Int
+
+  """
+  Update the genre of the book.
+  """
+  genre: Genre
+
+  """
+  Update the price of the book.
+  """
+  price: Float
+
+  """
+  Update the status of the book (e.g., available, out of stock).
+  """
+  status: BookStatus
+
+  """
+  Update the ID of the author who wrote the book.
+  """
+  authorId: ID
+}
+
+"""
+Root query type for retrieving data from the API.
+"""
+type Query {
+  """
+  Retrieve a paginated list of books with optional filters and sorting.
+  """
+  books(input: BookListInput): BookConnection!
+
+  """
+  Retrieve a single book by its unique ID.
+  """
+  book(id: ID!): Book
+
+  """
+  Retrieve a single author by their unique ID.
+  """
+  author(id: ID!): Author
+
+  """
+  Retrieve a list of all authors.
+  """
+  authors: [Author!]!
+}
+
+"""
+Root mutation type for modifying data in the API.
+"""
+type Mutation {
+  """
+  Create a new book entry in the store.
+  """
+  createBook(input: CreateBookInput!): Book!
+
+  """
+  Update an existing book.
+  """
+  updateBook(id: ID!, input: UpdateBookInput!): Book!
+
+  """
+  Delete a book by its unique ID.
+  """
+  deleteBook(id: ID!): Boolean!
+}

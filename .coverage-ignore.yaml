@@ -1,0 +1,3 @@
+module: "github.com/wimspaargaren/gql-gen-mcp"
+ignore_rules:
+  - "example/.*"

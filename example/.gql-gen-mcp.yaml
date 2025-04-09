@@ -1,0 +1,4 @@
+schemas:
+  - name: bookstore
+    dir: ./bookstore-api/schema
+    output: ./mcp/bookstore
