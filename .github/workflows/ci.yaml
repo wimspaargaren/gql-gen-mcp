@@ -1,0 +1,72 @@
+name: go-continuous-integration
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - run: go install github.com/go-task/task/v3/cmd/task@latest
+      - run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.1.2
+      - run: task lint
+  deps:
+    name: deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - run: go mod tidy
+      - name: Check Git Diff
+        run: |
+          if [[ -n $(git diff --exit-code) ]]; then
+            echo "Go module not up to date. Please run 'go mod tidy' and commit the changes."
+            exit 1
+          fi    
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - run: go install github.com/wimspaargaren/go-cover-ignore@latest
+      - run: go install github.com/go-task/task/v3/cmd/task@latest
+      - run: task test
+  integration-test:
+    name: integration-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - run: go install github.com/go-task/task/v3/cmd/task@latest
+      - run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.1.2
+      - run: task integration-test
+      - name: Check Git Diff
+        run: |
+          if [[ -n $(git diff --exit-code) ]]; then
+          echo "Example code not up to date. Please run 'task integration-test' and commit the changes."
+          exit 1
+          fi 
+  vulncheck:
+    name: vulncheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - run: go install github.com/go-task/task/v3/cmd/task@latest
+      - run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - run: task vulncheck
