@@ -3,8 +3,6 @@ package main
 
 import (
 	"log"
-	"net/http"
-	"os"
 
 	"github.com/mark3labs/mcp-go/server"
 
@@ -25,10 +23,7 @@ func main() {
 		server.WithRecovery(),
 	)
 
-	gqlClient := graphql.NewDefaultClient(os.Getenv("BASE_URL"), func(req *http.Request) error {
-		req.Header.Set("Authorization", "Bearer "+os.Getenv("AUTH_TOKEN"))
-		return nil
-	})
+	gqlClient := graphql.NewDefaultClient("http://127.0.0.1:8080/query")
 
 	toolRegistry := NewToolRegistry(s, gqlClient)
 	toolRegistry.RegisterTools()
