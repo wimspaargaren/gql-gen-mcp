@@ -1,6 +1,6 @@
 # Overview
 
-The gql-gen-mcp tool has it's name inspired by the awesome [99design/gql-gen](https://github.com/99designs/gqlgen) generator. Instead of generating a GraphQL server, it generates Model Context Protocol (MCP) (stdio) servers based on your GraphQL schema definitions. It's currently based on [mark3labs/mcp-go](https://github.com/mark3labs/mcp-go) as it's the most widely adopted MCP Go server (April 2025). Gotools just started an implementation see [mcp go thread](https://github.com/orgs/modelcontextprotocol/discussions/224#discussioncomment-12924467), so perhaps we eventually switch over or make it configurable which server to use as output.
+The gql-gen-mcp tool has its name inspired by the awesome [github.com/99designs/gqlgen](https://github.com/99designs/gqlgen) generator. Instead of generating a GraphQL server, it generates Model Context Protocol (MCP) (stdio) servers based on your GraphQL schema definitions. It's currently based on [mark3labs/mcp-go](https://github.com/mark3labs/mcp-go) as it's the most widely adopted MCP Go server (April 2025). Gotools just started an implementation see [mcp go thread](https://github.com/orgs/modelcontextprotocol/discussions/224#discussioncomment-12924467), so perhaps we eventually switch over or make it configurable which server to use as output.
 
 # Usage
 
@@ -43,7 +43,7 @@ MCP server definition:
 
 ## Example 
 
-Checkout the [example](./example/README.md) directory for a full example with a dummy bookstore GraphQL API.
+Check out the [example](./example/README.md) directory for a full example with a dummy bookstore GraphQL API.
 
 # Missing features
 
