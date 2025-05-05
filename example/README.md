@@ -5,9 +5,9 @@ This example shows you a dummy bookstore with a GraphQL API server with some LLM
 # Run on your machine
 
 1. `go run ./bookstore-api/cmd/bookstore-api`
-2. `go install mcp/bookstore`
+2. `go install ./mcp/bookstore`
 3. `go install github.com/mark3labs/mcphost@latest`
-4. Configure `~/.msp.json`
+4. Configure `~/.mcp.json`
 ```JSON
 {
   "mcpServers": {
