@@ -130,12 +130,16 @@ func (r *queryResolver) Books(ctx context.Context, input *models1.BookListInput)
 		sortBy = input.SortBy.String()
 	}
 
-	books, totalCount, err := r.bookRepository.GetBooks(ctx, repository.BookListInput{
+	bookListInput := repository.BookListInput{
 		Filter: filter,
-		First:  input.First,
-		After:  input.After,
 		SortBy: &sortBy,
-	})
+	}
+	if input != nil {
+		bookListInput.First = input.First
+		bookListInput.After = input.After
+	}
+
+	books, totalCount, err := r.bookRepository.GetBooks(ctx, bookListInput)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get books: %w", err)
 	}
