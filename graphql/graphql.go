@@ -14,9 +14,9 @@ import (
 
 // Request represents a GraphQL request.
 type Request struct {
-	Query         string         `json:"query"`
-	Variables     map[string]any `json:"variables,omitempty"`
-	OperationName string         `json:"operationName,omitempty"`
+	Query         string `json:"query"`
+	Variables     any    `json:"variables,omitempty"`
+	OperationName string `json:"operationName,omitempty"`
 }
 
 // HTTPRequestHook is a function that can be used to modify the HTTP request before it is sent.
